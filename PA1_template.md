@@ -130,7 +130,7 @@ d<-data
 i<-aggin
 completedcases<-fill(d,i)
 ```
-## <p class=import1>Fill in missing values with the average number of steps for each missing interval.</p>
+## Strategy:<p class=import1>Fill in missing values with the average number of steps for each missing interval.</p>
 
 ### Histogram of total steps in complete cases dataset
 

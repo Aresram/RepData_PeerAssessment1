@@ -197,13 +197,37 @@ str(weekcases)
 ##  $ weekcat : Factor w/ 2 levels "Weekday","Weekend": 1 1 1 1 1 1 1 1 1 1 ...
 ```
 
+```r
+weekframes<-split(weekcases,weekcases$weekcat)
+```
 
+Get average steps per interval on weekdays
 
+```r
+weekdayaggin<-aggregate(as.numeric(weekframes[[1]]$steps),list(weekframes[[1]]$interval),mean, na.rm=TRUE)
 
+names(weekdayaggin)<-c("Interval","Average Steps")
+weekdaytimes<-ts(weekdayaggin$"Average Steps",start=1,end=288, frequency=1)
+```
 
+Get average steps per interval on weekends
 
+```r
+weekendaggin<-aggregate(as.numeric(weekframes[[2]]$steps),list(weekframes[[2]]$interval),mean, na.rm=TRUE)
 
+names(weekendaggin)<-c("Interval","Average Steps")
+weekendtimes<-ts(weekendaggin$"Average Steps",start=1,end=288, frequency=1)
+```
 
+### Plot averages for weekend and weekdays
 
+```r
+weekaggin<-rbind(weekdayaggin,weekendaggin)
+library(lattice)
+ xyplot(weekaggin$"Average Steps" ~ weekaggin$Interval | weekaggin$weekcat,type="l", main="Average Steps taken for 288 intervals",layout=c(1,2),xlab="Interval",ylab="Avg Steps taken")
+```
 
+```
+## Error in limits.and.aspect(default.prepanel, prepanel = prepanel, have.xlim = have.xlim, : need at least one panel
+```
 

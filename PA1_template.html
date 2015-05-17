@@ -369,6 +369,35 @@ str(weekcases)
 ##  $ weekcat : Factor w/ 2 levels &quot;Weekday&quot;,&quot;Weekend&quot;: 1 1 1 1 1 1 1 1 1 1 ...
 </code></pre>
 
+<pre><code class="r">weekframes&lt;-split(weekcases,weekcases$weekcat)
+</code></pre>
+
+<p>Get average steps per interval on weekdays</p>
+
+<pre><code class="r">weekdayaggin&lt;-aggregate(as.numeric(weekframes[[1]]$steps),list(weekframes[[1]]$interval),mean, na.rm=TRUE)
+
+names(weekdayaggin)&lt;-c(&quot;Interval&quot;,&quot;Average Steps&quot;)
+weekdaytimes&lt;-ts(weekdayaggin$&quot;Average Steps&quot;,start=1,end=288, frequency=1)
+</code></pre>
+
+<p>Get average steps per interval on weekends</p>
+
+<pre><code class="r">weekendaggin&lt;-aggregate(as.numeric(weekframes[[2]]$steps),list(weekframes[[2]]$interval),mean, na.rm=TRUE)
+
+names(weekendaggin)&lt;-c(&quot;Interval&quot;,&quot;Average Steps&quot;)
+weekendtimes&lt;-ts(weekendaggin$&quot;Average Steps&quot;,start=1,end=288, frequency=1)
+</code></pre>
+
+<h3>Plot averages for weekend and weekdays</h3>
+
+<pre><code class="r">weekaggin&lt;-rbind(weekdayaggin,weekendaggin)
+library(lattice)
+ xyplot(weekaggin$&quot;Average Steps&quot; ~ weekaggin$Interval | weekaggin$weekcat,type=&quot;l&quot;, main=&quot;Average Steps taken for 288 intervals&quot;,layout=c(1,2),xlab=&quot;Interval&quot;,ylab=&quot;Avg Steps taken&quot;)
+</code></pre>
+
+<pre><code>## Error in limits.and.aspect(default.prepanel, prepanel = prepanel, have.xlim = have.xlim, : need at least one panel
+</code></pre>
+
 </body>
 
 </html>

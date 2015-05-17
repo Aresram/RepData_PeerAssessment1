@@ -174,16 +174,31 @@ getweekend<-function(d, ke){
 weekcat<-sapply(casesdays$days,getweekend, weekend)
 weekcases<-cbind(casesdays,weekcat)
 str(weekcases)
+weekframes<-split(weekcases,weekcases$weekcat)
+```
+
+Get average steps per interval on weekdays
+```{r weekday steps}
+weekdayaggin<-aggregate(as.numeric(weekframes[[1]]$steps),list(weekframes[[1]]$interval),mean, na.rm=TRUE)
+
+names(weekdayaggin)<-c("Interval","Average Steps")
+weekdaytimes<-ts(weekdayaggin$"Average Steps",start=1,end=288, frequency=1)
 
 ```
 
+Get average steps per interval on weekends
+```{r weekend steps}
+weekendaggin<-aggregate(as.numeric(weekframes[[2]]$steps),list(weekframes[[2]]$interval),mean, na.rm=TRUE)
 
+names(weekendaggin)<-c("Interval","Average Steps")
+weekendtimes<-ts(weekendaggin$"Average Steps",start=1,end=288, frequency=1)
+```
 
+### Plot averages for weekend and weekdays
+```{r}
+weekaggin<-rbind(weekdayaggin,weekendaggin)
+library(lattice)
+ xyplot(weekaggin$"Average Steps" ~ weekaggin$Interval | weekaggin$weekcat,type="l", main="Average Steps taken for 288 intervals",layout=c(1,2),xlab="Interval",ylab="Avg Steps taken")
 
-
-
-
-
-
-
+```
 

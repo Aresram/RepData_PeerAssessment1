@@ -337,6 +337,38 @@ completedtotal&lt;-sum(completedaggsum$&quot;Total Steps&quot;,na.rm=TRUE)
 
 <h2>Are there differences in activity patterns between weekdays and weekends?</h2>
 
+<pre><code class="r">getday&lt;-function(obj){weekdays(as.Date(obj))}
+
+days&lt;-sapply(completedcases$date,getday)
+casesdays&lt;-cbind(completedcases,days)
+
+week&lt;-c(&quot;Monday&quot;,&quot;Tuesday&quot;,&quot;Wednesday&quot;,&quot;Thursday&quot;,&quot;Friday&quot;,&quot;Saturday&quot;,&quot;Sunday&quot;)
+weekend&lt;-c(&quot;Sunday&quot;,&quot;Saturday&quot;)
+
+getweekend&lt;-function(d, ke){
+    result&lt;-character()
+    for(i in 1:length(ke)){
+        if(d==ke[i])
+            result&lt;-&quot;Weekend&quot;
+        else
+            result&lt;-&quot;Weekday&quot;
+    }
+    result
+}
+
+weekcat&lt;-sapply(casesdays$days,getweekend, weekend)
+weekcases&lt;-cbind(casesdays,weekcat)
+str(weekcases)
+</code></pre>
+
+<pre><code>## &#39;data.frame&#39;:    17568 obs. of  5 variables:
+##  $ steps   : num  1.717 0.3396 0.1321 0.1509 0.0755 ...
+##  $ date    : chr  &quot;2012-10-01&quot; &quot;2012-10-01&quot; &quot;2012-10-01&quot; &quot;2012-10-01&quot; ...
+##  $ interval: int  0 5 10 15 20 25 30 35 40 45 ...
+##  $ days    : Factor w/ 7 levels &quot;Friday&quot;,&quot;Monday&quot;,..: 2 2 2 2 2 2 2 2 2 2 ...
+##  $ weekcat : Factor w/ 2 levels &quot;Weekday&quot;,&quot;Weekend&quot;: 1 1 1 1 1 1 1 1 1 1 ...
+</code></pre>
+
 </body>
 
 </html>

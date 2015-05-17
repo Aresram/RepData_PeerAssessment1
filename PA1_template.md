@@ -163,12 +163,39 @@ By replacing missing values with the average steps taken for each interval, the 
 ## Are there differences in activity patterns between weekdays and weekends?
 
 
+```r
+getday<-function(obj){weekdays(as.Date(obj))}
 
+days<-sapply(completedcases$date,getday)
+casesdays<-cbind(completedcases,days)
 
+week<-c("Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday")
+weekend<-c("Sunday","Saturday")
 
+getweekend<-function(d, ke){
+	result<-character()
+	for(i in 1:length(ke)){
+		if(d==ke[i])
+			result<-"Weekend"
+		else
+			result<-"Weekday"
+	}
+	result
+}
 
+weekcat<-sapply(casesdays$days,getweekend, weekend)
+weekcases<-cbind(casesdays,weekcat)
+str(weekcases)
+```
 
-
+```
+## 'data.frame':	17568 obs. of  5 variables:
+##  $ steps   : num  1.717 0.3396 0.1321 0.1509 0.0755 ...
+##  $ date    : chr  "2012-10-01" "2012-10-01" "2012-10-01" "2012-10-01" ...
+##  $ interval: int  0 5 10 15 20 25 30 35 40 45 ...
+##  $ days    : Factor w/ 7 levels "Friday","Monday",..: 2 2 2 2 2 2 2 2 2 2 ...
+##  $ weekcat : Factor w/ 2 levels "Weekday","Weekend": 1 1 1 1 1 1 1 1 1 1 ...
+```
 
 
 

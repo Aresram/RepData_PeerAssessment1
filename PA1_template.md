@@ -162,6 +162,7 @@ By replacing missing values with the average steps taken for each interval, the 
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
+Split add Weekend/Weekday factor to data set.
 
 ```r
 getday<-function(obj){weekdays(as.Date(obj))}
@@ -208,6 +209,7 @@ weekdayaggin<-aggregate(as.numeric(weekframes[[1]]$steps),list(weekframes[[1]]$i
 
 names(weekdayaggin)<-c("Interval","Average Steps")
 weekdaytimes<-ts(weekdayaggin$"Average Steps",start=1,end=288, frequency=1)
+weekdayaggin$weekcat<-"Weekday"
 ```
 
 Get average steps per interval on weekends
@@ -217,6 +219,7 @@ weekendaggin<-aggregate(as.numeric(weekframes[[2]]$steps),list(weekframes[[2]]$i
 
 names(weekendaggin)<-c("Interval","Average Steps")
 weekendtimes<-ts(weekendaggin$"Average Steps",start=1,end=288, frequency=1)
+weekendaggin$weekcat<-"Weekend"
 ```
 
 ### Plot averages for weekend and weekdays
@@ -224,10 +227,8 @@ weekendtimes<-ts(weekendaggin$"Average Steps",start=1,end=288, frequency=1)
 ```r
 weekaggin<-rbind(weekdayaggin,weekendaggin)
 library(lattice)
- xyplot(weekaggin$"Average Steps" ~ weekaggin$Interval | weekaggin$weekcat,type="l", main="Average Steps taken for 288 intervals",layout=c(1,2),xlab="Interval",ylab="Avg Steps taken")
+xyplot(weekaggin$"Average Steps" ~ weekaggin$Interval | weekaggin$weekcat,type="l", main="Average Steps taken for 288 intervals",layout=c(1,2),xlab="Interval",ylab="Avg Steps taken")
 ```
 
-```
-## Error in limits.and.aspect(default.prepanel, prepanel = prepanel, have.xlim = have.xlim, : need at least one panel
-```
+![plot of chunk unnamed-chunk-1](figure/unnamed-chunk-1-1.png) 
 

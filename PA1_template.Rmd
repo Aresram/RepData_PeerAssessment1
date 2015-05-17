@@ -3,18 +3,65 @@ title: "Reproducible Research: Peer Assessment 1"
 output: 
   html_document:
     keep_md: true
+
+
 ---
+<style type="text/css">
+p.import { color:green;}
+</style>
 
 
 ## Loading and preprocessing the data
 
+```{r load}
+ load<-read.csv("activity/activity.csv", header=TRUE,stringsAsFactors=FALSE)
+data<-load
+
+```
 
 
 ## What is mean total number of steps taken per day?
 
+```{r mean}
+ aggmean<-aggregate(as.numeric(data$steps),list(data$date),mean,na.action=na.omit)
+aggsum<-aggregate(as.numeric(data$steps),list(data$date),sum,na.rm=TRUE)
+
+names(aggsum)<-c("Date","Total Steps")
+names(aggmean)<-c("Date","Average Steps")
+
+meanperdaymean<-mean(aggmean$"Average Steps", na.rm=TRUE)
+
+meanperalldays<-mean(aggsum$"Total Steps",na.rm=TRUE)
+total<-sum(aggsum$"Total Steps",na.rm=TRUE)
+ medsteps<-median(aggsum$"Total Steps", na.rm=TRUE)
+```
+### <p class=import>Total Steps taken in the 2 months: `r total` steps</p>
+
+### <p class=import>There are an average of `r meanperdaymean` steps per interval. </p>
+
+### <p class=import>There are an average of `r meanperalldays` steps taken per day. </p>
+
+### <p class=import>There is a median of `r medsteps` steps taken per day. </p>
+
+### Histogram of total steps.
+```{r total steps histogram}
+hist(aggsum$"Total Steps",breaks=length(aggsum$"Date"))
+```
+
 
 
 ## What is the average daily activity pattern?
+
+
+Take the average of each interval.
+Plot a time series of averages for 1-288 intervals.
+```{r average steps per interval}
+aggin<-aggregate(as.numeric(data$steps),list(data$interval),mean, na.rm=TRUE)
+names(aggin)<-c("Interval","Average Steps")
+ times<-ts(aggin$"Average Steps",start=1,end=288, frequency=1)
+plot(times)
+
+```
 
 
 

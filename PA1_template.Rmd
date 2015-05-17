@@ -8,13 +8,14 @@ output:
 ---
 <style type="text/css">
 p.import { color:green;}
+p.import1{color:red;}
 </style>
 
 
 ## Loading and preprocessing the data
 
 ```{r load}
- load<-read.csv("activity/activity.csv", header=TRUE,stringsAsFactors=FALSE)
+load<-read.csv("activity/activity.csv", header=TRUE,stringsAsFactors=FALSE)
 data<-load
 
 ```
@@ -23,7 +24,7 @@ data<-load
 ## What is mean total number of steps taken per day?
 
 ```{r mean}
- aggmean<-aggregate(as.numeric(data$steps),list(data$date),mean,na.action=na.omit)
+aggmean<-aggregate(as.numeric(data$steps),list(data$date),mean,na.action=na.omit)
 aggsum<-aggregate(as.numeric(data$steps),list(data$date),sum,na.rm=TRUE)
 
 names(aggsum)<-c("Date","Total Steps")
@@ -63,10 +64,107 @@ plot(times)
 
 ```
 
+What interval has the greatest average?
+```{r interval with largest average}
+mx<-max(aggin$"Average Steps")
+mxs<-aggin[aggin$"Average Steps"==mx,]
+```
+### <p class=import>The largest average for any interval is `r mx` average steps taken interval per day. </p>
+### <p class=import>The interval with the greatest average steps per day is interval `r mxs$Interval` at `r mxs$"Average Steps"` steps taken per day. </p>
+
+
+
+
+
+
 
 
 ## Imputing missing values
 
 
+```{r missing values}
+comp<-complete.cases(data)
+incomplete<-data[!comp,]
+inc<-length(incomplete[[1]])
+```
+### <p class=import>The dataset has `r inc` observations with missing values.</p>
+
+
+```{r fill in missing values}
+
+findint<-function(int,indf){
+
+	steps<-0
+	for(n in 1:length(indf[[1]]) )
+	{ 
+		if(indf[n,"Interval"]==int){
+		steps<-indf[n,"Average Steps"]
+	   	}
+	}
+	steps
+}
+
+fill<-function(df,indf){
+
+	filled<-data.frame()
+	for(i in 1:length(df[[1]]))
+	{
+		if(is.na(df$steps[i]))
+		{
+			df$steps[i]<- findint(df[i,"interval"], indf)
+		}
+	filled<-rbind(filled,df[i,])
+	}
+	filled
+}
+d<-data
+i<-aggin
+completedcases<-fill(d,i)
+```
+## <p class=import1>Fill in missing values with the average number of steps for each missing interval.</p>
+
+### Histogram of total steps in complete cases dataset
+```{r histogram of complete cases}
+completedaggsum<-aggregate(as.numeric(completedcases$steps),list(completedcases$date),sum,na.rm=TRUE)
+names(completedaggsum)<-c("Date","Total Steps")
+hist(completedaggsum$"Total Steps",breaks=length(completedaggsum$"Date"))
+
+```
+```{r mean and median steps with completed cases}
+completedmeanperalldays<-mean(completedaggsum$"Total Steps",na.rm=TRUE)
+completedtotal<-sum(completedaggsum$"Total Steps",na.rm=TRUE)
+ completedmedsteps<-median(completedaggsum$"Total Steps", na.rm=TRUE)
+```
+### <p class=import>Total Steps taken in the 2 months: `r completedtotal` steps in the filled in dataset.</p>
+
+### <p class=import>There are an average of `r completedmeanperalldays` steps taken per day in the filled in data set. </p>
+
+### <p class=import>There is a median of `r completedmedsteps` steps taken per dayin the filled in dataset. </p>
+
+### Do these values differ from the estimates from the first part of the assignment? 
+The mean and median of the filled in dataset are close to the mean and median of the original data.
+### What is the impact of imputing missing data on the estimates of the total daily number of steps?
+By replacing missing values with the average steps taken for each interval, the mean is now equal to the median. Adding the averages into the missing values decreased the skew of the distribution of steps.
+
+
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

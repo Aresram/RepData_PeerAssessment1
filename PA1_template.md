@@ -8,6 +8,7 @@ output:
 ---
 <style type="text/css">
 p.import { color:green;}
+p.import1{color:red;}
 </style>
 
 
@@ -15,7 +16,7 @@ p.import { color:green;}
 
 
 ```r
- load<-read.csv("activity/activity.csv", header=TRUE,stringsAsFactors=FALSE)
+load<-read.csv("activity/activity.csv", header=TRUE,stringsAsFactors=FALSE)
 data<-load
 ```
 
@@ -24,7 +25,7 @@ data<-load
 
 
 ```r
- aggmean<-aggregate(as.numeric(data$steps),list(data$date),mean,na.action=na.omit)
+aggmean<-aggregate(as.numeric(data$steps),list(data$date),mean,na.action=na.omit)
 aggsum<-aggregate(as.numeric(data$steps),list(data$date),sum,na.rm=TRUE)
 
 names(aggsum)<-c("Date","Total Steps")
@@ -70,9 +71,90 @@ plot(times)
 
 ![plot of chunk average steps per interval](figure/average steps per interval-1.png) 
 
+What interval has the greatest average?
+
+```r
+mx<-max(aggin$"Average Steps")
+mxs<-aggin[aggin$"Average Steps"==mx,]
+```
+### <p class=import>The largest average for any interval is 206.1698113 average steps taken interval per day. </p>
+### <p class=import>The interval with the greatest average steps per day is interval 835 at 206.1698113 steps taken per day. </p>
+
+
+
+
+
+
 
 
 ## Imputing missing values
+
+
+
+```r
+comp<-complete.cases(data)
+incomplete<-data[!comp,]
+inc<-length(incomplete[[1]])
+```
+### <p class=import>The dataset has 2304 observations with missing values.</p>
+
+
+
+```r
+findint<-function(int,indf){
+
+	steps<-0
+	for(n in 1:length(indf[[1]]) )
+	{ 
+		if(indf[n,"Interval"]==int){
+		steps<-indf[n,"Average Steps"]
+	   	}
+	}
+	steps
+}
+
+fill<-function(df,indf){
+
+	filled<-data.frame()
+	for(i in 1:length(df[[1]]))
+	{
+		if(is.na(df$steps[i]))
+		{
+			df$steps[i]<- findint(df[i,"interval"], indf)
+		}
+	filled<-rbind(filled,df[i,])
+	}
+	filled
+}
+d<-data
+i<-aggin
+completedcases<-fill(d,i)
+```
+## <p class=import1>Fill in missing values with the average number of steps for each missing interval.</p>
+
+### Histogram of total steps in complete cases dataset
+
+```r
+completedaggsum<-aggregate(as.numeric(completedcases$steps),list(completedcases$date),sum,na.rm=TRUE)
+names(completedaggsum)<-c("Date","Total Steps")
+hist(completedaggsum$"Total Steps",breaks=length(completedaggsum$"Date"))
+```
+
+![plot of chunk histogram of complete cases](figure/histogram of complete cases-1.png) 
+
+```r
+completedmeanperalldays<-mean(completedaggsum$"Total Steps",na.rm=TRUE)
+completedtotal<-sum(completedaggsum$"Total Steps",na.rm=TRUE)
+ completedmedsteps<-median(completedaggsum$"Total Steps", na.rm=TRUE)
+```
+### <p class=import>Total Steps taken in the 2 months: 6.5673751 &times; 10<sup>5</sup> steps in the filled in dataset.</p>
+
+### <p class=import>There are an average of 1.0766189 &times; 10<sup>4</sup> steps taken per day in the filled in data set. </p>
+
+### <p class=import>There is a median of 1.0766189 &times; 10<sup>4</sup> steps taken per dayin the filled in dataset. </p>
+
+
+
 
 
 

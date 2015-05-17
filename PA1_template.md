@@ -153,9 +153,30 @@ completedtotal<-sum(completedaggsum$"Total Steps",na.rm=TRUE)
 
 ### <p class=import>There is a median of 1.0766189 &times; 10<sup>4</sup> steps taken per dayin the filled in dataset. </p>
 
-
-
+### Do these values differ from the estimates from the first part of the assignment? 
+The mean and median of the filled in dataset are close to the mean and median of the original data.
+### What is the impact of imputing missing data on the estimates of the total daily number of steps?
+By replacing missing values with the average steps taken for each interval, the mean is now equal to the median. Adding the averages into the missing values decreased the skew of the distribution of steps.
 
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
